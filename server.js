@@ -27,7 +27,17 @@ app.get('/api/hello', function(req, res) {
 });
 
 app.post('/api/shorturl', (req, res) => {
-  const { url } = req.params
+  const { url } = req.body
+
+  const expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi
+
+  const regex = new RegExp(expression)
+  
+  if (!url.match(regex)) {
+    res.json({
+      error: 'invalid url'
+    })
+  } 
   
   const db = JSON.parse(fs.readFileSync(pathToDb, 'utf8'))
   
@@ -51,10 +61,10 @@ app.get('/api/shorturl/:short_url', (req, res) => {
   const db = JSON.parse(fs.readFileSync(pathToDb, 'utf8'))
 
   const result = db.filter(el => {
-    return el.short_url == short_url
+    return el.short_url == +short_url
   })
 
-  res.json(result)
+  return res.redirect(result[0].original_url)
 })
 
 app.listen(port, function() {
