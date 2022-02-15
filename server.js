@@ -27,7 +27,7 @@ app.get('/api/hello', function(req, res) {
 });
 
 app.post('/api/shorturl', (req, res) => {
-  const { original_url } = req.body
+  const { url } = req.params
   
   const db = JSON.parse(fs.readFileSync(pathToDb, 'utf8'))
   
@@ -35,7 +35,7 @@ app.post('/api/shorturl', (req, res) => {
   const newId = +lastId + 1
 
   const newItem = {
-    original_url,
+    original_url: url,
     short_url: newId
   }
 
