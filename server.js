@@ -46,7 +46,15 @@ app.post('/api/shorturl', (req, res) => {
 })
 
 app.get('/api/shorturl/:short_url', (req, res) => {
-  
+  const { short_url } = req.params
+
+  const db = JSON.parse(fs.readFileSync(pathToDb, 'utf8'))
+
+  const result = db.filter(el => {
+    return el.short_url == short_url
+  })
+
+  res.json(result)
 })
 
 app.listen(port, function() {
